@@ -15,7 +15,7 @@ The preferred way to install the library is using composer.
 
 Run:
 
-    composer require mattnw/zoho-api
+    composer require matthewnw/zoho-api
 
 ## Examples
 

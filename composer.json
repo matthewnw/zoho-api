@@ -1,5 +1,5 @@
 {
-    "name": "mattnw/zoho-api",
+    "name": "matthewnw/zoho-api",
     "description": "A class to consume Zoho's Creator and Reports API.",
     "license": "MIT",
     "keywords": ["zoho", "creator", "reports", "zohocreator", "api"],

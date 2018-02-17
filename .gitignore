@@ -1,0 +1,5 @@
+example
+vendor/
+._*
+.DS_Store
+composer.lock

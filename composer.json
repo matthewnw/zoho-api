@@ -1,0 +1,20 @@
+{
+    "name": "mattnw/zoho-api",
+    "description": "A class to consume Zoho's Creator and Reports API.",
+    "license": "MIT",
+    "keywords": ["zoho", "creator", "reports", "zohocreator", "api"],
+    "authors": [
+        {
+            "name": "Matthew Williams",
+            "email": "matthew@codelaunch.uk",
+            "homepage": "https://codelaunch.uk"
+        }
+    ],
+    "require": {
+        "php": ">=5.6"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {"Mattnw\\Zoho": "src/Zoho/"}
+    }
+}

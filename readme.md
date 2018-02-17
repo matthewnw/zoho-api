@@ -21,7 +21,7 @@ Run:
 
 ### Creator Example
 
-    use Mattnw\Zoho\Creator\ZohoCreatorClient;
+    use Matthewnw\Zoho\Creator\ZohoCreatorClient;
 
     // Initializes the class.
     $zohoCreatorClient = new ZohoCreatorClient($apiToken);
@@ -39,6 +39,8 @@ Run:
     $creatorapplication->add($formName, $dataArray);
 
 ### Reports Example
+
+    use Matthewnw\Zoho\Creator\ZohoCreatorClient;
 
     $zohoReportsClient = new ZohoReportsClient($apiToken);
 

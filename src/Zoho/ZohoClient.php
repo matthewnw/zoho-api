@@ -3,6 +3,7 @@
 namespace Matthewnw\Zoho;
 
 use Matthewnw\Zoho\Exception;
+use Matthewnw\Zoho\Exception\ZohoAPIError;
 
 /**
 	* Zoho provides the php based language binding to the https based api of Zoho API.
@@ -19,46 +20,57 @@ abstract class ZohoClient {
 		* @var string $zoho_url The base request api URL.
 	*/
 	public $zoho_url;
+
 	/**
 		* @var const ZOHO_API_VERSION It contain the api version.It is a constant one.
 	*/
 	const ZOHO_API_VERSION = '1.0';
+
 	/**
 		* @var string $zoho_action It is action name, that is performed by the URL.
 	*/
 	public $zoho_action;
+
 	/**
 		* @var string $zoho_authtoken It is a unique token that authenticates the user to access the Zoho Account. This is a user-specific and permanent token, that need to be passed along with every Zoho Reports API request.
 	*/
 	public $zoho_authtoken;
+
 	/**
 		* @var boolean $proxy It will indicate wheather the proxy is set or not.
 	*/
 	public $proxy = FALSE;
+
 	/**
 		* @var string $proxy_host The hostname/ip address of the proxy-server.
 	*/
 	public $proxy_host;
+
 	/**
 		* @var int $proxy_port The proxy server port.
 	*/
 	public $proxy_port;
+
 	/**
 		* @var string $proxy_user_name The user name for proxy-server authentication.
 	*/
 	public $proxy_user_name;
+
 	/**
 		* @var string $proxy_password The password for proxy-server authentication.
 	*/
 	public $proxy_password;
+
 	/**
 		* @var string $proxy_type Can be any one ( HTTP , HTTPS , BOTH ).Specify "BOTH" if same configuration can be used for both http and https.
 	*/
 	public $proxy_type;
+
 	/**
 		* @var int $connection_timeout It is a time value until a connection is etablished.
 	*/
 	public $connection_timeout;
+
 	/**
 		* @var int $read_timeout It is a time value until waiting to read data.
 	*/
@@ -157,17 +169,11 @@ abstract class ZohoClient {
         try {
             $request = $this->sendRequest($url, $params, true);
 			if ($request == '' || $request == false){
-				return new APIError('Null request() returned', 'ZohoClient->call()->sendRequest()');
+				return new ZohoAPIError('Null request() returned', 'ZohoClient->call()->sendRequest()');
 			}
             return $request;
-        } catch (ServerException $e) {
-			return new APIError($e, 'ZohoClient->call()->sendRequest()');
-        } catch (IOException $e) {
-			return new APIError($e, 'ZohoClient->call()->sendRequest()');
-        } catch (ParseException $e) {
-			return new APIError($e, 'ZohoClient->call()->sendRequest()');
-        } catch (\Exception $e){
-			return new APIError($e, 'ZohoClient->call()->sendRequest()');
+        } catch (\Exception $e) {
+			return new ZohoAPIError($e, 'ZohoClient->call()->sendRequest()');
         }
     }
 
@@ -216,11 +222,11 @@ abstract class ZohoClient {
                 }
                 if(json_last_error())
                 {
-                    throw new ParseException("Returned JSON format for ".$this->zoho_action." is not proper. Could possibly be version mismatch");
+                    throw new Exception\ParseException("Returned JSON format for ".$this->zoho_action." is not proper. Could possibly be version mismatch");
                 }
                 $error_message = $JSON_response['message'];
                 $error_code = $JSON_response['code'];
-                throw new ServerException($error_code, $error_message, $this->zoho_action, $HTTP_status_code);
+                throw new Exception\ServerException($error_code, $error_message, $this->zoho_action, $HTTP_status_code);
             }
             else
             {
@@ -239,7 +245,7 @@ abstract class ZohoClient {
                     }
                     if(json_last_error())
                     {
-                        throw new ParseException("Returned JSON format for ".$this->zoho_action." is not proper. Could possibly be version mismatch");
+                        throw new Exception\ParseException("Returned JSON format for ".$this->zoho_action." is not proper. Could possibly be version mismatch");
                     }
                     else
                     {
@@ -250,7 +256,7 @@ abstract class ZohoClient {
         }
         else
         {
-            throw new IOException(curl_error($HTTP_request), $this->zoho_action, $HTTP_status_code);
+            throw new Exception\IOException(curl_error($HTTP_request), $this->zoho_action, $HTTP_status_code);
         }
         curl_close($HTTP_request);
     }

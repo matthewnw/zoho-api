@@ -3,6 +3,7 @@
 namespace Matthewnw\Zoho\Creator;
 
 use Matthewnw\Zoho\ZohoClient;
+use Matthewnw\Zoho\Exception\ZohoAPIError;
 
 /**
 	* ZohoCreator provides the php based language binding to the https based api of ZohoCreator.
@@ -19,7 +20,7 @@ class ZohoCreatorClient extends ZohoClient {
 
 	public function application($name) {
         if (!array_key_exists($name, $this->applications)) {
-            $this->applications[$name] = new Application($name, $this);
+            $this->applications[$name] = new ZohoApplication($name, $this);
         }
         return $this->applications[$name];
     }
@@ -27,7 +28,11 @@ class ZohoCreatorClient extends ZohoClient {
 	/**
      * @see https://www.zoho.eu/creator/help/api/rest-api/rest-api-list-applications.html
      */
-    public function applications() {
-        return $this->call('applications');
+    public function getApplications() {
+        $response = $this->call('applications');
+        if (! $response instanceOf ZohoAPIError){
+            $this->applications = $response['result']['application_list']['applications'][0]['application'];
+        }
+        return $response;
     }
 }

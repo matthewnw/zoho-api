@@ -27,16 +27,16 @@ Run:
     $zohoCreatorClient = new ZohoCreatorClient($apiToken);
 
     // Get a list of available Applications
-    $Creatorapplications = $zohoCreatorClient->applications();
-
-    // get records from a Creator View
-    $creatorViewRecords = $zohoCreatorClient->application($appliucation)->viewRecords($viewName);
+    $creatorapplications = $zohoCreatorClient->applications();
 
     // Get a specific Application instance
-    $Creatorapplication = $zohoCreatorClient->applications($applicationName);
+    $creatorapplication = $zohoCreatorClient->application($applicationName);
+
+    // get records from a Creator View and chain application method
+    $creatorViewRecords = $zohoCreatorClient->application($applicationName)->viewRecords($viewName);
 
     // add records form a Creator Form
-    $Creatorapplication->add($formName, $dataArray);
+    $creatorapplication->add($formName, $dataArray);
 
 ### Reports Example
 

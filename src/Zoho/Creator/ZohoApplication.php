@@ -2,15 +2,19 @@
 
 namespace Matthewnw\Zoho\Creator;
 
-use Matthewnw\Zoho\Exception\APIError;
+use Matthewnw\Zoho\Exception\ZohoAPIError;
 
-class Application {
+class ZohoApplication {
 
     public $name;
-    protected $zohoCreator;
-    protected $views = array();
 
-    public function __construct($name, Creator $zohoCreator) {
+    protected $zohoCreator;
+
+    public $views = [];
+
+    public $forms = [];
+
+    public function __construct($name, ZohoCreatorClient $zohoCreator) {
         $this->name = $name;
         $this->zohoCreator = $zohoCreator;
     }
@@ -22,15 +26,20 @@ class Application {
 	/**
      * @see https://www.zoho.eu/creator/help/api/rest-api/rest-api-view-records-in-view.html
      */
-    public function viewRecords($viewName) {
+    public function getRecords($viewName) {
         return $this->call("view/{$viewName}", array('raw' => 'true'));
     }
 
 	/**
      * @see https://www.zoho.eu/creator/help/api/rest-api/rest-api-list-forms-and-views.html
      */
-    public function formsAndViews() {
-        return $this->call("formsandviews");
+    public function getFormsAndViews() {
+        $response = $this->call("formsandviews");
+        if (! $response instanceOf ZohoAPIError){
+            $this->forms = $response['application-name'][1]['formList'];
+            $this->views = $response['application-name'][1]['viewList'];
+        }
+        return $response;
     }
 
 	/**
@@ -39,7 +48,7 @@ class Application {
      */
     public function add($formName, $data) {
         $result = $this->call("{$formName}/add/", array(), array("PostData" => $data));
-		if ($result instanceof APIError){
+		if ($result instanceof ZohoAPIError){
 
 		}
         if ($result->formname[1]->operation[1]->values[1]->status[0] == 'Success') {

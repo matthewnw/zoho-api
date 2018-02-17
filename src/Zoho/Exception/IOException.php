@@ -3,7 +3,7 @@
 namespace Matthewnw\Zoho\Exception;
 
 /**
-            *IOException is thrown when an input or output operation is failed or interpreted.
+    *IOException is thrown when an input or output operation is failed or interpreted.
 */
 class IOException extends \Exception
 {

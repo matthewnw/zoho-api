@@ -33,7 +33,7 @@ Run:
     $creatorapplication = $zohoCreatorClient->application($applicationName);
 
     // get records from a Creator View and chain application method
-    $creatorViewRecords = $zohoCreatorClient->application($applicationName)->viewRecords($viewName);
+    $creatorViewRecords = $zohoCreatorClient->application($applicationName)->getRecords($viewName);
 
     // add records form a Creator Form
     $creatorapplication->add($formName, $dataArray);

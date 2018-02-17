@@ -19,8 +19,8 @@ class ZohoApplication {
         $this->zohoCreator = $zohoCreator;
     }
 
-	public function call($path, $params = array(), $options = array()) {
-        return $this->zohoCreator->call("{$this->name}/$path", $params, $options);
+	public function call($path, $params = array(), $username = null) {
+        return $this->zohoCreator->call("{$this->name}/$path", $params, $username);
     }
 
 	/**
@@ -47,15 +47,15 @@ class ZohoApplication {
      * @param array $data An associative array of key => value pairs to set
      */
     public function add($formName, $data) {
-        $result = $this->call("{$formName}/add/", array(), array("PostData" => $data));
-		if ($result instanceof ZohoAPIError){
-
-		}
-        if ($result->formname[1]->operation[1]->values[1]->status[0] == 'Success') {
-            return $result->formname[1]->operation[1]->values[0];
-        } else {
-            throw new \Exception(sprintf("Zoho error: %s", $result->formname[1]->operation[1]->values[1]->status[0]));
+        $response = $this->call("form/{$formName}/record/add/", $data, $this->zohoCreator->username);
+        if (isset($response['formname'][1]['operation'][1]['status'])) {
+            if ($response['formname'][1]['operation'][1]['status'] == 'Success'){
+                return $response['formname'][1]['operation'][1]['values'];
+            }else{
+                return $response['formname'][1]['operation'][1]['status'];
+            }
         }
+        throw new \Exception(sprintf("Zoho error: %s", $response));
     }
 
 }

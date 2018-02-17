@@ -161,11 +161,24 @@ abstract class ZohoClient {
 		return $this->read_timeout;
 	}
 
-	public function call($path, $params = array(), $config = array()) {
+	/**
+	 * Call a request and send to Zoho
+	 *
+	 * @param $path path suffix for the request
+	 * @param array $params
+	 * @param $username send optional username as some end points need it prefixed like adding records (https://www.zoho.eu/creator/help/api/rest-api/rest-api-add-records.html)
+	 * @return mixed
+	 */
+	public function call($path, $params = array(), $username = null) {
         $params = array_merge($this->fixedParams, $params);
 		$params['authtoken'] = $this->zoho_authtoken;
 		$params['scope'] = $this->scope;
-        $url = $this->zoho_url . '/json/' . $path;
+		// check for username as some API paths need the username prefix for some stupid reason
+		if ($username === null){
+			$url = "$this->zoho_url/json/$path";
+		}else{
+			$url = "$this->zoho_url/$username/json/$path";
+		}
         try {
             $request = $this->sendRequest($url, $params, true);
 			if ($request == '' || $request == false){
@@ -184,7 +197,7 @@ abstract class ZohoClient {
     */
     protected function sendRequest($request_url, $params, $return_response = true)
     {
-        if($this->zoho_action != "IMPORT")
+		if($this->zoho_action != "IMPORT")
         {
             $params = array_diff($params,array(''));
         }
@@ -243,12 +256,14 @@ abstract class ZohoClient {
                         $HTTP_response = stripslashes($HTTP_response);
                         $JSON_response = json_decode($HTTP_response, TRUE);
                     }
-                    if(json_last_error())
-                    {
+                    if(json_last_error() ){
                         throw new Exception\ParseException("Returned JSON format for ".$this->zoho_action." is not proper. Could possibly be version mismatch");
-                    }
-                    else
-                    {
+                    }else{
+						if(isset($JSON_response['errorlist'])){
+							$error_code = $JSON_response['errorlist'][0]['error'][0];
+							$error_message = $JSON_response['errorlist'][0]['error'][1];
+							throw new Exception\ServerException($error_code, $error_message, $this->zoho_action, $HTTP_status_code);
+						}
                         return $JSON_response;
                     }
                 }

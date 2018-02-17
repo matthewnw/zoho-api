@@ -13,8 +13,18 @@ class ZohoCreatorClient extends ZohoClient {
 
 	protected $applications = array();
 
-	public function __construct($auth_token)
+    /**
+		* @var string $zohoUsername for Zoho.
+	*/
+    public $username;
+
+    /**
+     * @param $auth_token Zoho Creator API Token
+     * @param [type] $zohoUsername username for Zoho creator (Not an email address)
+     */
+	public function __construct($auth_token, $zohoUsername)
 	{
+        $this->username = $zohoUsername;
         parent::__construct('creatorapi', 'https://creator.zoho.com/api', $auth_token);
 	}
 
